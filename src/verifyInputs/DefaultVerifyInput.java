@@ -1,5 +1,6 @@
 package verifyInputs;
 
+import operations.*;
 import verifyInputs.VerifyInput;
 
 public class DefaultVerifyInput implements VerifyInput {
@@ -31,6 +32,12 @@ public class DefaultVerifyInput implements VerifyInput {
     public Boolean operatorTesting(String input){
 
         return "+-*/%".contains(input);
+    }
+
+    @Override
+    public Boolean hasPrecedence(Operation op1, Operation op2) {
+        return (op2 instanceof Multiplication || op2 instanceof Division) &&
+                (op1 instanceof Addition || op1 instanceof Subtraction);
     }
 
 

@@ -1,5 +1,7 @@
 package verifyInputs;
 
+import operations.Operation;
+
 public interface VerifyInput {
 
 
@@ -8,6 +10,8 @@ public interface VerifyInput {
     Boolean doubleTesting(String input);
 
     Boolean operatorTesting(String input);
+
+    Boolean hasPrecedence(Operation op1, Operation op2);
 
 
 }

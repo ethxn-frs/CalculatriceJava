@@ -23,21 +23,30 @@ public class Main {
             if (input.equals("=")) {
 
                 calculator.calculate();
-                System.out.println("Voulez vous relancer ? 1 - Oui / 0 - Non");
-                int restart = scanner.nextInt();
-                scanner.nextLine();
+                int restart;
 
-                if (restart == 1){
+                do {
+                    System.out.println("Voulez-vous relancer ? 1 - Oui / 0 - Non");
+                    try {
+                        restart = scanner.nextInt();
+                        scanner.nextLine();
+                    } catch (java.util.InputMismatchException e) {
+                        System.out.println("Veuillez entrer un nombre valide (1 ou 0).");
+                        scanner.nextLine();
+                        restart = -1;
+                    }
+                }
 
+                while (restart != 1 && restart != 0);
+                if (restart == 1) {
                     calculator.reset();
                     inputHistory.clear();
                 } else {
                     start = false;
                 }
             } else {
-
                 String previousInput = calculator.processInput(input);
-                if ( previousInput != null ){
+                if (previousInput != null) {
                     inputHistory.add(previousInput);
                 }
             }

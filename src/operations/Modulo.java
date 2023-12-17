@@ -8,6 +8,9 @@ public class Modulo implements Operation {
             if (operand2 == 0) {
                 throw new ArithmeticException("Le modulo par 0 n'est pas autorisée");
             }
+            if ( operand1 < 0 || operand2 < 0 ) {
+                throw new ArithmeticException("Le modulo avec un nombre négatif n'est pas autorisé");
+            }
             return operand1 % operand2;
         } catch (ArithmeticException e) {
             System.err.println("Erreur : " + e.getMessage());

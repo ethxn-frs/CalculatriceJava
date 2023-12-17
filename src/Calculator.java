@@ -61,7 +61,7 @@ public class Calculator {
         for (String s : characters) {
             if (verifyInput.operatorTesting(s) && s.length() < 2) {
                 setOperation(s);
-                while (!operators.isEmpty() && hasPrecedence(currentOperation, operators.peek())) {
+                while (!operators.isEmpty() && verifyInput.hasPrecedence(currentOperation, operators.peek())) {
                     applyOperation(operands, operators);
                 }
                 operators.push(currentOperation);
@@ -74,7 +74,6 @@ public class Calculator {
                 }
             }
         }
-
         // Appliquer les opérations restantes
         while (!operators.isEmpty()) {
             applyOperation(operands, operators);
@@ -91,11 +90,6 @@ public class Calculator {
         double op1 = operands.isEmpty() ? 0 : operands.pop();
         double result = operator.apply(op1, op2);
         operands.push(result);
-    }
-
-    private boolean hasPrecedence(Operation op1, Operation op2) {
-        return (op2 instanceof Multiplication || op2 instanceof Division) &&
-                (op1 instanceof Addition || op1 instanceof Subtraction);
     }
 
     private void setOperation(String operator) {
