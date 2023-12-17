@@ -15,7 +15,6 @@ public class Calculator {
         this.verifyInput = verifyInput;
     }
     private String finalSentence = "";
-    
     public String processInput(String input) {
         
         if (verifyInput.isValidInput(input)){
@@ -57,7 +56,7 @@ public class Calculator {
         }
         return null;
     }
-
+    
     public void calculate() {
         Stack<Double> operands = new Stack<>();
         Stack<Operation> operators = new Stack<>();
@@ -82,7 +81,6 @@ public class Calculator {
         while (!operators.isEmpty()) {
             operands.push(verifyInput.applyOperation(operands, operators));
         }
-
         if (!operands.isEmpty()) {
             System.out.println(finalSentence + " = "  + operands.pop());
         }

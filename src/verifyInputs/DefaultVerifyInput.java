@@ -47,8 +47,7 @@ public class DefaultVerifyInput implements VerifyInput {
         Operation operator = operators.pop();
         double op2 = operands.pop();
         double op1 = operands.isEmpty() ? 0 : operands.pop();
-        double result = operator.apply(op1, op2);
-        return result;
+        return operator.apply(op1, op2);
     }
 
 }
