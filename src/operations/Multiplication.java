@@ -1,3 +1,5 @@
+package operations;
+
 public class Multiplication implements Operation{
 
     @Override
