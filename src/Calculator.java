@@ -14,7 +14,8 @@ public class Calculator {
     public Calculator(VerifyInput verifyInput) {
         this.verifyInput = verifyInput;
     }
-
+    private String finalSentence = "";
+    
     public String processInput(String input) {
         
         if (verifyInput.isValidInput(input)){
@@ -25,6 +26,7 @@ public class Calculator {
                 if (verifyInput.doubleTesting(input)){
 
                     characters.add(input);
+                    finalSentence += " " + input;
                     return input;
                 } else {
                     System.out.println("La première entrée doit être un nombre !");
@@ -38,11 +40,13 @@ public class Calculator {
 
                     // Cas ou le user entre un opérateur apres un nombre
                     characters.add(input);
+                    finalSentence += " " + input;
                     return input;
                 } else if (verifyInput.operatorTesting(lastInput) && verifyInput.doubleTesting(input)){
 
                     // Cas ou le user entre un nombre apres un opérateur
                     characters.add(input);
+                    finalSentence += " " + input;
                     return input;
                 } else {
                     System.out.println("L'entrée n'est pas correcte, veuillez réessayer.");
@@ -62,7 +66,7 @@ public class Calculator {
             if (verifyInput.operatorTesting(s) && s.length() < 2) {
                 setOperation(s);
                 while (!operators.isEmpty() && verifyInput.hasPrecedence(currentOperation, operators.peek())) {
-                    applyOperation(operands, operators);
+                    operands.push(verifyInput.applyOperation(operands, operators));
                 }
                 operators.push(currentOperation);
             } else {
@@ -76,20 +80,12 @@ public class Calculator {
         }
         // Appliquer les opérations restantes
         while (!operators.isEmpty()) {
-            applyOperation(operands, operators);
+            operands.push(verifyInput.applyOperation(operands, operators));
         }
 
         if (!operands.isEmpty()) {
-            System.out.println("Résultat : " + operands.pop());
+            System.out.println(finalSentence + " = "  + operands.pop());
         }
-    }
-
-    private void applyOperation(Stack<Double> operands, Stack<Operation> operators) {
-        Operation operator = operators.pop();
-        double op2 = operands.pop();
-        double op1 = operands.isEmpty() ? 0 : operands.pop();
-        double result = operator.apply(op1, op2);
-        operands.push(result);
     }
 
     private void setOperation(String operator) {
@@ -116,6 +112,7 @@ public class Calculator {
 
     public void reset(){
         this.characters.clear();
+        this.finalSentence = "";
         currentOperation = null;
     }
 }

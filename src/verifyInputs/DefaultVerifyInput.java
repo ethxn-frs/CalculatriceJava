@@ -3,6 +3,8 @@ package verifyInputs;
 import operations.*;
 import verifyInputs.VerifyInput;
 
+import java.util.Stack;
+
 public class DefaultVerifyInput implements VerifyInput {
 
 
@@ -40,5 +42,13 @@ public class DefaultVerifyInput implements VerifyInput {
                 (op1 instanceof Addition || op1 instanceof Subtraction);
     }
 
+    @Override
+    public Double applyOperation(Stack<Double> operands, Stack<Operation> operators) {
+        Operation operator = operators.pop();
+        double op2 = operands.pop();
+        double op1 = operands.isEmpty() ? 0 : operands.pop();
+        double result = operator.apply(op1, op2);
+        return result;
+    }
 
 }
