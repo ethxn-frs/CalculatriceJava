@@ -3,12 +3,13 @@ import verifyInputs.VerifyInput;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class Calculator {
 
     private final List<String> characters = new ArrayList<>();
     private Operation currentOperation;
-    private VerifyInput verifyInput;
+    private final VerifyInput verifyInput;
 
     public Calculator(VerifyInput verifyInput) {
         this.verifyInput = verifyInput;
@@ -54,34 +55,51 @@ public class Calculator {
     }
 
     public void calculate() {
+        Stack<Double> operands = new Stack<>();
+        Stack<Operation> operators = new Stack<>();
 
-        double result = 0;
-        double operand = 0;
-
-        for ( String s : characters){
-
-            if (verifyInput.operatorTesting(s) && s.length() < 2){
+        for (String s : characters) {
+            if (verifyInput.operatorTesting(s) && s.length() < 2) {
                 setOperation(s);
+                operators.push(currentOperation);
             } else {
                 try {
-                    operand = operand * 10 + Double.parseDouble(s);
-                    if (currentOperation != null){
-                        result = currentOperation.apply(result, operand);
-
-                    } else {
-                        result = operand;
+                    double operand = Double.parseDouble(s);
+                    operands.push(operand);
+                } catch (NumberFormatException e) {
+                    // Si ce n'est pas un nombre, c'est un opérateur
+                    if (currentOperation != null) {
+                        while (!operators.isEmpty() && hasPrecedence(currentOperation, operators.peek())) {
+                            Operation operator = operators.pop();
+                            double op2 = operands.pop();
+                            double op1 = operands.isEmpty() ? 0 : operands.pop();
+                            double result = operator.apply(op1, op2);
+                            operands.push(result);
+                        }
+                        operators.push(currentOperation);
                     }
-                    operand = 0;
-
-                } catch (Exception e){
-                    System.err.println("Erreur : " + e);
                 }
             }
         }
 
-        System.out.println(" Résultat : " + result);
+        // Effectuer les opérations restantes
+        while (!operators.isEmpty()) {
+            Operation operator = operators.pop();
+            double op2 = operands.pop();
+            double op1 = operands.isEmpty() ? 0 : operands.pop();
+            double result = operator.apply(op1, op2);
+            operands.push(result);
+        }
+
+        if (!operands.isEmpty()) {
+            System.out.println("Résultat : " + operands.pop());
+        }
     }
 
+    private boolean hasPrecedence(Operation op1, Operation op2) {
+        return (op2 instanceof Addition || op2 instanceof Subtraction) &&
+                (op1 instanceof Multiplication || op1 instanceof Division);
+    }
     private void setOperation(String operator) {
         switch (operator) {
             case "+":
