@@ -1,4 +1,4 @@
-
+package operations;
 
 public class Addition implements Operation {
 
