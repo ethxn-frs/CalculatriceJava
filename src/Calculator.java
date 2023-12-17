@@ -61,34 +61,23 @@ public class Calculator {
         for (String s : characters) {
             if (verifyInput.operatorTesting(s) && s.length() < 2) {
                 setOperation(s);
+                while (!operators.isEmpty() && hasPrecedence(currentOperation, operators.peek())) {
+                    applyOperation(operands, operators);
+                }
                 operators.push(currentOperation);
             } else {
                 try {
                     double operand = Double.parseDouble(s);
                     operands.push(operand);
                 } catch (NumberFormatException e) {
-                    // Si ce n'est pas un nombre, c'est un opérateur
-                    if (currentOperation != null) {
-                        while (!operators.isEmpty() && hasPrecedence(currentOperation, operators.peek())) {
-                            Operation operator = operators.pop();
-                            double op2 = operands.pop();
-                            double op1 = operands.isEmpty() ? 0 : operands.pop();
-                            double result = operator.apply(op1, op2);
-                            operands.push(result);
-                        }
-                        operators.push(currentOperation);
-                    }
+                    System.out.println("Erreur : " + e);
                 }
             }
         }
 
-        // Effectuer les opérations restantes
+        // Appliquer les opérations restantes
         while (!operators.isEmpty()) {
-            Operation operator = operators.pop();
-            double op2 = operands.pop();
-            double op1 = operands.isEmpty() ? 0 : operands.pop();
-            double result = operator.apply(op1, op2);
-            operands.push(result);
+            applyOperation(operands, operators);
         }
 
         if (!operands.isEmpty()) {
@@ -96,10 +85,19 @@ public class Calculator {
         }
     }
 
-    private boolean hasPrecedence(Operation op1, Operation op2) {
-        return (op2 instanceof Addition || op2 instanceof Subtraction) &&
-                (op1 instanceof Multiplication || op1 instanceof Division);
+    private void applyOperation(Stack<Double> operands, Stack<Operation> operators) {
+        Operation operator = operators.pop();
+        double op2 = operands.pop();
+        double op1 = operands.isEmpty() ? 0 : operands.pop();
+        double result = operator.apply(op1, op2);
+        operands.push(result);
     }
+
+    private boolean hasPrecedence(Operation op1, Operation op2) {
+        return (op2 instanceof Multiplication || op2 instanceof Division) &&
+                (op1 instanceof Addition || op1 instanceof Subtraction);
+    }
+
     private void setOperation(String operator) {
         switch (operator) {
             case "+":
